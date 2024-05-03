@@ -1,7 +1,6 @@
 package com.hudson.soares.clientes.clientes.repository;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,30 +12,24 @@ import org.springframework.beans.factory.DisposableBean;
 import org.springframework.stereotype.Component;
 
 import com.hudson.soares.clientes.clientes.model.ClienteDTO;
-import com.hudson.soares.clientes.clientes.utils.PropertiesUtils;
+import com.hudson.soares.clientes.clientes.utils.ConnectionFactory;
 
 import lombok.Data;
 
 @Component
 @Data
-public class JDBCRepository implements DisposableBean {
+public class ClienteJDBCRepository implements DisposableBean {
 
-    private Connection connection;
+    private Connection localConnection;
+    private ConnectionFactory connectionFactory;
 
-    private String urlConnection;
-    private String passwd;
-    private String user;
-
-    private PropertiesUtils propertiesUtils;
-
-    public JDBCRepository( PropertiesUtils propertiesUtils ) {
-        this.propertiesUtils = propertiesUtils;
-        try {
-            this.urlConnection = getPropertiesUtils().getProperties().getProperty("spring.datasource.url");
-            this.passwd = getPropertiesUtils().getProperties().getProperty("spring.datasource.password");
-            this.user   = getPropertiesUtils().getProperties().getProperty("spring.datasource.username");
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            this.connection = DriverManager.getConnection(urlConnection, user, passwd);
+    public ClienteJDBCRepository( ConnectionFactory connectionFactory ) {
+        this.connectionFactory = connectionFactory;
+          try {
+            setLocalConnection(getConnectionFactory().getConnection("spring.datasource.driver-class-name", 
+                                                       "spring.datasource.url",
+                                                      "spring.datasource.username", 
+                                                      "spring.datasource.password"));
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
@@ -61,7 +54,7 @@ public class JDBCRepository implements DisposableBean {
                     order by nome;
                              """;
             List<ClienteDTO> list = new ArrayList<>();
-            preparedStatement = this.connection.prepareStatement(sql);
+            preparedStatement = this.localConnection.prepareStatement(sql);
             preparedStatement.setInt(1, status);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
@@ -86,7 +79,7 @@ public class JDBCRepository implements DisposableBean {
 
     @Override
     public void destroy() throws Exception {
-        this.connection.close();
+        this.localConnection.close();
     }
 
 }

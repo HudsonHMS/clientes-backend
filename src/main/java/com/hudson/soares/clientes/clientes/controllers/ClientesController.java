@@ -7,20 +7,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hudson.soares.clientes.clientes.model.ClienteDTO;
-import com.hudson.soares.clientes.clientes.services.VendasService;
+import com.hudson.soares.clientes.clientes.services.ClientesService;
 
 import lombok.AllArgsConstructor;
 
 @RestController
-@RequestMapping("/vendas")
+@RequestMapping("/clientes")
 @AllArgsConstructor
-public class VendasController {
+public class ClientesController {
     
-    private VendasService vendasService;
+    private ClientesService vendasService;
 
     @GetMapping("")
     public List<ClienteDTO> hello() {
-        return vendasService.getClientesList();
+        return vendasService.getClientes();
     }
 
 }
