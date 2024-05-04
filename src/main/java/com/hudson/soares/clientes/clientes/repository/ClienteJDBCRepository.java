@@ -35,7 +35,7 @@ public class ClienteJDBCRepository implements DisposableBean {
         }
     }
 
-    public List<ClienteDTO> listaClientes( Integer status ) {
+    public List<ClienteDTO> listaClientesAtivos( Long status ) {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         try {
@@ -55,11 +55,11 @@ public class ClienteJDBCRepository implements DisposableBean {
                              """;
             List<ClienteDTO> list = new ArrayList<>();
             preparedStatement = this.localConnection.prepareStatement(sql);
-            preparedStatement.setInt(1, status);
+            preparedStatement.setLong(1, status);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                list.add(new ClienteDTO(resultSet.getInt("id"), resultSet.getString("nome"),
-                        resultSet.getString("cpf"), resultSet.getInt("status"), resultSet.getString("status_nome")));
+                list.add(new ClienteDTO(resultSet.getLong("id"), resultSet.getString("nome"),
+                        resultSet.getString("cpf"), resultSet.getLong("status"), resultSet.getString("status_nome")));
             }
             resultSet.close();
             return list;

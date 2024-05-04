@@ -11,7 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.Valid;
+import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -22,29 +22,30 @@ import lombok.Data;
 @Table(name = "tb_clientes")
 @AllArgsConstructor
 @Data
+@Transactional
 public class Cliente {
 
-    public Cliente(){}
+    public Cliente(){ /** default contructor */ }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 255)
+    @Column(length = 255, nullable = false)
+    @Size(max = 255, min = 3)
     @NotBlank
     @NotNull
-    @Size(min = 3, max = 255)
     private String nome;
 
-    @Column(nullable = false, length = 11)
+    @Column(length = 11, nullable = false)
+    @Size(max = 11, min = 11)
     @NotBlank
     @NotNull
-    @Size(max = 11, min = 11)
     @CPF
     private String cpf;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(nullable = false, referencedColumnName = "id")
-    @Valid
+    @JoinColumn(referencedColumnName = "id")
+    @NotNull
     private Status status;
 }
