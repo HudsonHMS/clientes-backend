@@ -9,14 +9,14 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "tb_status")
+@NoArgsConstructor
 @AllArgsConstructor
 @Data
 public class Status {
-
-    public Status() {/** default contructor */}
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,4 +25,5 @@ public class Status {
     @Column(length = 255, nullable = false)
     @Size(min = 5, max = 255)
     private String nome;
+    
 }

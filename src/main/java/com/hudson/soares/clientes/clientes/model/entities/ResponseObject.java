@@ -12,6 +12,7 @@ import lombok.Data;
 @Data
 public class ResponseObject<T> {
     private HttpStatus status;
+    @JsonInclude(content = Include.NON_NULL)
     private T responseData;
     @JsonInclude(value = Include.NON_DEFAULT)
     private String message;

@@ -59,7 +59,7 @@ public class ClienteJDBCRepository implements DisposableBean {
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 list.add(new ClienteDTO(resultSet.getLong("id"), resultSet.getString("nome"),
-                        resultSet.getString("cpf"), resultSet.getLong("status"), resultSet.getString("status_nome")));
+                        resultSet.getString("cpf"), resultSet.getLong("status"), resultSet.getString("status_nome"), null));
             }
             resultSet.close();
             return list;

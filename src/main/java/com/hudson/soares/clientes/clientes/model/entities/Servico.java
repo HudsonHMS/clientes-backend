@@ -1,11 +1,11 @@
 package com.hudson.soares.clientes.clientes.model.entities;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
-import com.hudson.soares.clientes.clientes.model.interfaces.validators.CPF;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
-import jakarta.annotation.Nullable;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -14,47 +14,47 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-import jakarta.transaction.Transactional;
+import jakarta.persistence.PrePersist;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity
-@Table(name = "tb_clientes")
+@Entity(name = "tb_servico")
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
-@Transactional
-public class Cliente {
-
+public class Servico {
+ 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank
+    @NotNull
     @Column(length = 255, nullable = false)
-    @Size(max = 255, min = 3)
-    @NotBlank
-    @NotNull
-    private String nome;
+    private String descricao;
 
-    @Column(length = 11, nullable = false)
-    @Size(max = 11, min = 11)
-    @NotBlank
+    @Column
     @NotNull
-    @CPF
-    private String cpf;
+    @Positive
+    private Double valor;
+
+    @Column(nullable = false)
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
+    @JsonProperty(value = "data_cadastro")
+    private LocalDateTime dataCadastro;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(referencedColumnName = "id", nullable = false)
-    @NotNull
-    private Status status;
+    @JsonProperty(access = Access.WRITE_ONLY)
+    private Cliente cliente;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "cliente", orphanRemoval = true)
-    @Nullable
-    private List<Servico> servicos;
+    @PrePersist
+    public void beforeSave() {
+        setDataCadastro(LocalDateTime.now());
+    }
+
 }
