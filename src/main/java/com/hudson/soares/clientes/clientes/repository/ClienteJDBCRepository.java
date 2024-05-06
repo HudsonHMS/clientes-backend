@@ -21,7 +21,7 @@ import lombok.Data;
 public class ClienteJDBCRepository implements DisposableBean {
 
     private Connection localConnection;
-    private ConnectionFactory connectionFactory;
+    private final ConnectionFactory connectionFactory;
 
     public ClienteJDBCRepository( ConnectionFactory connectionFactory ) {
         this.connectionFactory = connectionFactory;

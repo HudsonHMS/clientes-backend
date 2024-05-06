@@ -42,19 +42,21 @@ public class Servico {
     @Positive
     private Double valor;
 
-    @Column(nullable = false)
-    @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
+    @Column(nullable = false, columnDefinition = "DATETIME DEFAULT NOW()", updatable = false)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", shape=JsonFormat.Shape.STRING, locale = "default")
     @JsonProperty(value = "data_cadastro")
     private LocalDateTime dataCadastro;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(referencedColumnName = "id", nullable = false)
+    @JoinColumn(referencedColumnName = "id", nullable = false, columnDefinition = "DATETIME DEFAULT NOW()")
     @JsonProperty(access = Access.WRITE_ONLY)
     private Cliente cliente;
 
     @PrePersist
     public void beforeSave() {
-        setDataCadastro(LocalDateTime.now());
+        if( null == getDataCadastro() ){
+            setDataCadastro(LocalDateTime.now());
+        }
     }
 
 }
