@@ -37,16 +37,16 @@ public class Cliente {
     private Long id;
 
     @Column(length = 255, nullable = false)
-    @Size(max = 255, min = 3)
-    @NotBlank
-    @NotNull
+    @Size(max = 255, min = 3, message = "{validations.nome.size}")
+    @NotBlank(message = "{validations.nome.blank}")
+    @NotNull(message = "{validations.nome}")
     private String nome;
 
     @Column(length = 11, nullable = false)
     @Size(max = 11, min = 11)
-    @NotBlank
-    @NotNull
-    @CPF
+    @NotBlank(message = "{validations.cpf.blank}")
+    @NotNull(message = "{validations.cpf.null}")
+    @CPF(message = "{validations.cpf}")
     private String cpf;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
